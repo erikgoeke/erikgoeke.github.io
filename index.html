@@ -75,6 +75,18 @@ figcaption{font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:.6r
 .slot.empty{display:none}
 @media(max-width:700px){.figrow,.figrow.three{grid-template-columns:1fr}}
 
+/* cool framed photo */
+.coolshot{position:relative;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px));
+  border:1px solid rgba(111,227,255,.55) !important;box-shadow:0 0 50px rgba(111,227,255,.3),inset 0 0 60px rgba(111,227,255,.08)}
+.coolshot img{transition:transform .6s ease;filter:saturate(1.06)}
+.coolshot:hover img{transform:scale(1.045)}
+.coolshot .scanline{position:absolute;left:0;right:0;top:-40%;height:38%;pointer-events:none;
+  background:linear-gradient(rgba(111,227,255,0),rgba(111,227,255,.14),rgba(111,227,255,0));
+  animation:scan 5.5s linear infinite}
+@keyframes scan{to{top:110%}}
+.coolshot figcaption{color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;
+  border-top:1px solid rgba(111,227,255,.3);background:rgba(8,13,28,.8)}
+
 /* reveal */
 .rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
 .rv.vis{opacity:1;transform:none}
@@ -217,7 +229,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
     <div class="panel rv">
       <p style="color:var(--ink)">I designed, implemented, and trained a <b>U-Net entirely from scratch</b> that outperformed the previously published benchmark and matched the far larger Prithvi foundation model across multiple geospatial segmentation tasks — evidence that a purpose-built lightweight architecture can rival a large-scale foundation model on domain-specific remote sensing.</p>
     </div>
-    <div class="slot rv" style="max-width:26rem"><figure><img src="assets/photos/nasa-msfc.jpg" alt="Erik Goeke at NASA Marshall Space Flight Center" onerror="this.closest('.slot').classList.add('empty')"><figcaption>On site at NASA Marshall Space Flight Center, Huntsville, AL.</figcaption></figure></div>
+    <div class="slot rv" style="max-width:26rem"><figure class="coolshot"><img src="assets/photos/nasa-msfc.jpg" alt="Erik Goeke at NASA Marshall Space Flight Center" onerror="this.closest('.slot').classList.add('empty')"><span class="scanline"></span><figcaption>On Site · NASA Marshall Space Flight Center · Huntsville, AL</figcaption></figure></div>
     <div class="stats rv">
       <div class="stat"><b>3</b><span>EO domains fine-tuned</span></div>
       <div class="stat"><b>&gt;SOTA</b><span>U-Net beat published benchmark</span></div>
