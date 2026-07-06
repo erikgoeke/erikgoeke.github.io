@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Erik Goeke — Aerospace Engineering &amp; Machine Learning</title>
+<meta name="description" content="Erik Goeke, aerospace engineer at Georgia Tech. Machine learning for Earth observation at NASA MSFC, microgravity robotics, lunar operations, and planetary defense.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070f; --bg2:#0a0f1e;
+  --ink:#dfe7f5; --dim:#8a97b5; --faint:#4a5674;
+  --cyan:#6fe3ff; --amber:#ffb454; --red:#fc3d21; --green:#7dffb2;
+  --line:rgba(111,227,255,.16); --panel:rgba(10,16,32,.72);
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+body.no3d{background:radial-gradient(ellipse at 50% -20%,#122448 0%,var(--bg) 60%)}
+::selection{background:var(--cyan);color:#04121c}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(255,255,255,.028) 1px,transparent 1px);background-size:3px 3px}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
+  padding:.65rem 1.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--dim);
+  background:linear-gradient(rgba(5,7,15,.85),rgba(5,7,15,0));text-transform:uppercase}
+#hud .id{color:var(--ink);font-weight:600}
+#hud .id b{color:var(--cyan)}
+#hud .clock{color:var(--amber)}
+#hud .tele span{margin-left:1.1rem}
+#hud .tele b{color:var(--cyan);font-weight:500}
+@media(max-width:760px){#hud .tele{display:none}}
+
+/* ---------- side nav ---------- */
+#nav{position:fixed;right:1.1rem;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:.55rem}
+#nav a{width:8px;height:8px;border-radius:50%;border:1px solid var(--faint);display:block;position:relative;transition:.25s}
+#nav a:hover,#nav a.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+#nav a i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-family:var(--mono);
+  font-size:.62rem;letter-spacing:.1em;color:var(--cyan);white-space:nowrap;opacity:0;transition:.2s;text-transform:uppercase}
+#nav a:hover i{opacity:1}
+@media(max-width:760px){#nav{display:none}}
+
+/* ---------- shared section chrome ---------- */
+main{position:relative;z-index:10}
+section{position:relative;min-height:100vh;display:flex;align-items:center;padding:6rem 0}
+.wrap{width:min(1060px,92vw);margin:0 auto}
+.stagechip{font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem}
+.stagechip::before{content:"▮ ";color:var(--red)}
+h1,h2{font-weight:700;letter-spacing:-.02em;line-height:1.08}
+h2{font-size:clamp(1.9rem,4.4vw,3.1rem);margin-bottom:1.1rem}
+.lede{font-size:clamp(1rem,1.6vw,1.15rem);color:var(--ink);max-width:46rem;margin-bottom:1rem}
+.plain{color:var(--dim);max-width:46rem;margin-bottom:1.6rem}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;backdrop-filter:blur(9px);padding:1.6rem}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin:1.4rem 0}
+.stat{border:1px solid var(--line);border-radius:8px;padding:.7rem 1.05rem;background:rgba(8,13,28,.55);min-width:8.5rem}
+.stat b{display:block;font-family:var(--mono);font-size:1.25rem;color:var(--cyan);font-weight:600}
+.stat span{font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.2rem}
+.tag{font-family:var(--mono);font-size:.64rem;letter-spacing:.07em;color:var(--green);border:1px solid rgba(125,255,178,.25);
+  border-radius:99px;padding:.28rem .75rem;text-transform:uppercase}
+.links{margin-top:1.4rem;display:flex;gap:1.4rem;flex-wrap:wrap;font-family:var(--mono);font-size:.78rem}
+.figrow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.figrow.three{grid-template-columns:repeat(3,1fr)}
+.figrow figure,.slot figure{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#080d1c}
+.figrow img,.slot img{width:100%;display:block}
+figcaption{font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:.6rem .8rem;letter-spacing:.05em}
+.slot.empty{display:none}
+@media(max-width:700px){.figrow,.figrow.three{grid-template-columns:1fr}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.rv.vis{opacity:1;transform:none}
+
+/* ---------- hero ---------- */
+#launch{min-height:100vh}
+#launch .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:1.3rem}
+#launch h1{font-size:clamp(2.6rem,7.5vw,5.2rem);margin-bottom:1.2rem}
+#launch h1 em{font-style:normal;color:var(--cyan)}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start}
+.headshot{width:180px;border-radius:12px;border:1px solid var(--line);overflow:hidden;box-shadow:0 0 40px rgba(111,227,255,.12)}
+.headshot img{width:100%;display:block}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:140px}}
+.badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.5rem 0}
+.badge{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--amber);border:1px solid rgba(255,180,84,.3);
+  border-radius:99px;padding:.32rem .8rem;text-transform:uppercase}
+.cta{display:inline-block;font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--cyan);border-radius:8px;padding:.75rem 1.4rem;margin-right:.9rem;margin-top:.6rem;transition:.25s}
+.cta:hover{background:var(--cyan);color:#04121c;text-decoration:none;box-shadow:0 0 22px rgba(111,227,255,.4)}
+.cta.ghost{border-color:var(--faint);color:var(--dim)}
+.cta.ghost:hover{background:var(--faint);color:var(--ink);box-shadow:none}
+.scrollhint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:.62rem;letter-spacing:.28em;color:var(--faint);text-transform:uppercase;animation:bob 2.4s infinite}
+@keyframes bob{50%{transform:translate(-50%,8px)}}
+
+/* ---------- NOTLO card ---------- */
+.notlo{font-family:var(--mono);font-size:.74rem;border:1px solid rgba(255,180,84,.35);border-radius:10px;
+  background:rgba(20,14,4,.6);margin:1.5rem 0;overflow:hidden;max-width:34rem}
+.notlo header{background:rgba(255,180,84,.12);padding:.55rem .9rem;color:var(--amber);letter-spacing:.12em;font-weight:600;display:flex;justify-content:space-between}
+.notlo .b{padding:.9rem;color:var(--ink);line-height:1.75}
+.notlo .b .k{color:var(--dim)}
+
+/* ---------- timeline ---------- */
+.timeline{border-left:1px solid var(--line);margin-left:.4rem;padding-left:1.6rem;display:flex;flex-direction:column;gap:1.6rem}
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:-1.98rem;top:.45rem;width:9px;height:9px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--cyan)}
+.tl time{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.tl h3{font-size:1.05rem;margin:.15rem 0}
+.tl p{color:var(--dim);font-size:.92rem;max-width:44rem}
+
+/* ---------- pubs / awards / manifest ---------- */
+.publist{display:flex;flex-direction:column;gap:.9rem;counter-reset:pub}
+.pub{border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;background:var(--panel);display:flex;gap:1rem}
+.pub::before{counter-increment:pub;content:"0" counter(pub);font-family:var(--mono);color:var(--faint);font-size:.8rem;padding-top:.15rem}
+.pub b{font-weight:500}
+.pub .meta{font-family:var(--mono);font-size:.68rem;color:var(--dim);display:block;margin-top:.3rem;letter-spacing:.05em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:10px;padding:1.15rem 1.3rem;background:var(--panel)}
+.card h3{font-size:.95rem;margin-bottom:.35rem}
+.card h3 span{color:var(--amber);font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;display:block;margin-bottom:.3rem;text-transform:uppercase}
+.card p{color:var(--dim);font-size:.88rem}
+
+/* ---------- contact / footer ---------- */
+#contact{min-height:70vh;text-align:center}
+#contact .email{font-family:var(--mono);font-size:clamp(1.1rem,3vw,1.7rem);color:var(--cyan)}
+footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);font-size:.64rem;color:var(--faint);
+  padding:2.5rem 1rem;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="grain"></div>
+
+<div id="hud">
+  <div class="id"><b>E.W.GOEKE</b> // MISSION PROFILE</div>
+  <div class="clock" id="clock">T+ 00:00:00</div>
+  <div class="tele">ALT <b id="alt">0 KM</b><span>VEL <b id="vel">0.0 KM/S</b></span><span>PHASE <b id="phase">PRELAUNCH</b></span></div>
+</div>
+
+<nav id="nav">
+  <a href="#launch"><i>Launch</i></a>
+  <a href="#leo"><i>Earth · ML</i></a>
+  <a href="#microgravity"><i>Microgravity</i></a>
+  <a href="#lunar"><i>Moon</i></a>
+  <a href="#deepspace"><i>Deep space</i></a>
+  <a href="#surface"><i>Surface ops</i></a>
+  <a href="#return"><i>Return · ML-Bots</i></a>
+  <a href="#experience"><i>Experience</i></a>
+  <a href="#publications"><i>Publications</i></a>
+  <a href="#awards"><i>Awards</i></a>
+  <a href="#contact"><i>Contact</i></a>
+</nav>
+
+<main>
+<!-- ============ HERO / LAUNCH ============ -->
+<section id="launch">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker rv">Georgia Institute of Technology · Aerospace Engineering · NASA Marshall Space Flight Center</div>
+        <h1 class="rv">Erik Goeke.<br>From Earth orbit<br>to <em>deep space</em>.</h1>
+        <p class="lede rv">Aerospace engineer building machine learning systems and space robotics — fine-tuning NASA's geospatial foundation models, flying ferrofluid robots in zero gravity, and architecting planetary defense.</p>
+        <p class="plain rv">M.S. Aerospace Engineering at Georgia Tech (Dec 2026), B.S. with Honor (2025). I lead research teams, take hardware from CAD to flight test, and represent NASA-funded student research at the national level — from NASA Headquarters to Capitol Hill.</p>
+        <div class="badges rv">
+          <span class="badge">GSGC Outstanding Achievement Fellowship</span>
+          <span class="badge">1st Place · Best Research Project</span>
+          <span class="badge">NASA ML-Bots Team Lead</span>
+        </div>
+        <div class="rv">
+          <a class="cta" href="#leo">Begin ascent</a>
+          <a class="cta ghost" href="#publications">Publications</a>
+        </div>
+      </div>
+      <div class="slot rv"><figure class="headshot"><img src="assets/photos/headshot.jpg" alt="Erik Goeke" onerror="this.closest('.slot').classList.add('empty')"></figure></div>
+    </div>
+  </div>
+  <div class="scrollhint">Scroll to begin the mission</div>
+</section>
+
+<!-- ============ STAGE 01 · LEO / EARTH OBSERVATION ============ -->
+<section id="leo">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 01 · Low Earth Orbit · Earth Observation</div>
+    <h2 class="rv">Teaching AI to read the Earth</h2>
+    <p class="lede rv">At NASA Marshall Space Flight Center, I fine-tuned the <b>Prithvi</b> geospatial foundation model across three Earth-observation domains — flood detection, burn scar mapping, and crop segmentation — building end-to-end pipelines from dataset curation and augmentation through training, hyperparameter optimization, and evaluation on real multispectral satellite imagery.</p>
+    <p class="plain rv">Satellites photograph every corner of the planet every few days. Foundation models like Prithvi learn from that archive so a little extra training lets them map a flood or trace a wildfire's scar anywhere on Earth. My job was that extra training — and then asking a harder question: does it have to be this big?</p>
+    <div class="panel rv">
+      <p style="color:var(--ink)">I designed, implemented, and trained a <b>U-Net entirely from scratch</b> that outperformed the previously published benchmark and matched the far larger Prithvi foundation model across multiple geospatial segmentation tasks — evidence that a purpose-built lightweight architecture can rival a large-scale foundation model on domain-specific remote sensing.</p>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><b>3</b><span>EO domains fine-tuned</span></div>
+      <div class="stat"><b>U-Net</b><span>from scratch, beat benchmark</span></div>
+      <div class="stat"><b>NASA</b><span>multispectral datasets</span></div>
+    </div>
+    <p class="plain rv">I also advised a NASA AI-agents team on architecture selection, task design, and applied-ML practice — training strategies, evaluation frameworks, and system integration.</p>
+    <div class="tags rv"><span class="tag">PyTorch</span><span class="tag">HuggingFace</span><span class="tag">TorchGeo</span><span class="tag">W&amp;B</span><span class="tag">Semantic segmentation</span></div>
+  </div>
+</section>
+<!-- ============ STAGE 02 · MICROGRAVITY / STICKR ============ -->
+<section id="microgravity">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 02 · Microgravity Coast · Space Robotics</div>
+    <h2 class="rv">STICKR — a robot that sticks to anything in zero-g</h2>
+    <p class="lede rv">The Surface Tension Induced Climbing Kinematic Robot uses <b>ferrofluid</b> — a magnetic liquid — as its adhesion mechanism, letting a small tracked robot drive on any surface in microgravity with no thrusters, no gravity, and no requirement that the surface be magnetic.</p>
+    <p class="plain rv">In orbit, wheels and legs are nearly useless: nothing pushes you into the floor. Thruster-based robots like Astrobee work, but cost power and complexity. STICKR holds itself down with the surface tension of a fluid pinned to its treads by magnets — and we proved it aboard a parabolic zero-gravity flight, presenting the results to Honeywell aerospace engineers.</p>
+    <div class="figrow rv">
+      <figure><img src="assets/stickr/stickr-robot.jpg" alt="The assembled STICKR robot: 3D-printed tracked chassis with Arduino Nano and servo drive"><figcaption>Flight hardware — 3D-printed tracked chassis, Arduino Nano control, magnet-lined treads.</figcaption></figure>
+      <figure><img src="assets/stickr/stickr-cad.jpg" alt="SolidWorks CAD render of the STICKR tank-tread design"><figcaption>SolidWorks design — tank drive chosen to maximize fluid contact perimeter.</figcaption></figure>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><b>0-g</b><span>parabolic flight tested</span></div>
+      <div class="stat"><b>0.5U</b><span>pocket payload class</span></div>
+      <div class="stat"><b>Any</b><span>surface, magnetic or not</span></div>
+    </div>
+    <div class="tags rv"><span class="tag">Ferrofluids</span><span class="tag">Surface tension</span><span class="tag">SolidWorks</span><span class="tag">Arduino</span><span class="tag">3D printing</span></div>
+    <div class="links rv"><a href="assets/papers/STICKR.pdf" target="_blank" rel="noopener">Technical report (PDF) ↗</a><span>with Ryan Cohen · Georgia Tech School of Aerospace Engineering</span></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 03 · LUNAR TRANSFER / NOTLO ============ -->
+<section id="lunar">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 03 · Lunar Transfer · Space Sustainability</div>
+    <h2 class="rv">NOTLO — air traffic control for the Moon</h2>
+    <p class="lede rv">A NOTAM-inspired deconfliction framework for high-cadence lunar surface operations: standardized, machine-readable notices — <b>DUSTLO</b> for regolith plumes, <b>RADLO</b> for radiation hazards, <b>EXPLO</b> for protected experiments — so lunar operators can coordinate without stepping on each other.</p>
+    <p class="plain rv">Aviation's NOTAM system keeps pilots informed but is famously unreadable. NOTLO redesigns the idea for the Moon: plain-language notices with consistent structure, a queryable central database, and priority filtering so operators only see what affects them. Shared with the Open Lunar Foundation for consideration in ongoing lunar-governance efforts.</p>
+    <div class="notlo rv">
+      <header><span>DUSTLO · N-0417</span><span>ARTEMIS BASE · PAD BRAVO</span></header>
+      <div class="b">
+        <span class="k">HAZARD:</span> Regolith dispersion — launch, heading east. 3 km dust plume expected.<br>
+        <span class="k">ACTION:</span> All EVA and rover activity ceases within 5 km radius.<br>
+        <span class="k">RESUME:</span> T+30 min after liftoff. Pressurized suits; cover solar panels.
+      </div>
+    </div>
+    <div class="tags rv"><span class="tag">Lunar governance</span><span class="tag">Deconfliction</span><span class="tag">Machine-readable</span><span class="tag">Open Lunar Foundation</span></div>
+    <div class="links rv"><a href="assets/papers/NOTLO.pdf" target="_blank" rel="noopener">Technical report (PDF) ↗</a></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 04 · DEEP SPACE / PLANETARY DEFENSE ============ -->
+<section id="deepspace">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 04 · Deep Space · Planetary Defense</div>
+    <h2 class="rv">Rapid planetary defense, as a system of systems</h2>
+    <p class="lede rv">As <b>Integration Engineer</b> on Georgia Tech's Grand Challenge team, I coordinated threat detection, orbital analysis, and asteroid deflection architecture across kinetic-impactor and ablation-based mitigation strategies — a rapid-response system of systems for near-Earth object threats.</p>
+    <p class="plain rv">DART proved we can nudge an asteroid — given years of warning. The harder problem is the one we find late. I ran simulations modeling asteroid threat scenarios and contributed to mission-architecture trade studies and deflection feasibility analysis: how fast can detection, launch, and mitigation chain together when the clock is short?</p>
+    <div class="stats rv">
+      <div class="stat"><b>SoS</b><span>detection → launch → deflection</span></div>
+      <div class="stat"><b>2</b><span>mitigation families studied</span></div>
+      <div class="stat"><b>NEO</b><span>threat scenario simulation</span></div>
+    </div>
+    <div class="tags rv"><span class="tag">Systems engineering</span><span class="tag">Orbital mechanics</span><span class="tag">Trade studies</span><span class="tag">Kinetic &amp; ablation</span></div>
+    <div class="links rv"><a href="assets/papers/Rapid_Planetary_Defense.pdf" target="_blank" rel="noopener">Technical report (PDF) ↗</a><span>AE 6393/6394 Grand Challenges · advised by Jeffrey McNabb &amp; Dr. Bradford Robertson · Prof. Dimitri Mavris</span></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 05 · SURFACE OPS / ROVER + STRUCTURES ============ -->
+<section id="surface">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 05 · Surface Operations · Vehicle Engineering</div>
+    <h2 class="rv">Machines that survive the field</h2>
+    <p class="lede rv">Two ground campaigns: a <b>Mars-inspired rover</b> holding constant speed over changing terrain with a hand-tuned PID controller, and a <b>structural test campaign</b> crushing 3D-printed spar designs to failure to find the strongest cross-section.</p>
+    <div class="figrow rv">
+      <figure><img src="assets/rover/rover.jpg" alt="Arduino-based PID cruise-control rover with DC motors, motor driver, and GPS"><figcaption>Rover Cruise Control (AE 4610) — Arduino, dual DC motors, GPS; closed-loop PID holds speed across slopes, the way Mars rovers manage inconsistent terrain. I built the rover, wired the motor driver and GPS, wrote the Arduino code, and tuned the gains experimentally.</figcaption></figure>
+      <figure><img src="assets/structures/spars.jpg" alt="Three 3D-printed spar specimens: horizontal bars, X-pattern, vertical columns"><figcaption>Aerospace structural integrity (AE 3610) — horizontal-bar, X-pattern, and vertical-column spars, SolidWorks-designed, 3D-printed in PLA, and compressed to failure on an Instron load frame. Horizontal bars won on stiffness, yield stress, and fracture load.</figcaption></figure>
+    </div>
+    <div class="figrow rv">
+      <figure><img src="assets/photos/poster.jpg" alt="Presenting the structures poster"><figcaption>Presenting the cross-sectional design study, Guggenheim School of Aerospace Engineering.</figcaption></figure>
+      <a href="assets/structures/poster-full.jpg" target="_blank" rel="noopener" style="text-decoration:none"><figure><img src="assets/structures/poster-full.jpg" alt="The full AE 3610 research poster"><figcaption>The poster itself — click to view full size.</figcaption></figure></a>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><b>PID</b><span>closed-loop speed control</span></div>
+      <div class="stat"><b>3</b><span>spar designs tested to failure</span></div>
+      <div class="stat"><b>Instron</b><span>compression campaign</span></div>
+    </div>
+    <div class="tags rv"><span class="tag">Control systems</span><span class="tag">Simulink</span><span class="tag">Arduino</span><span class="tag">Instron testing</span><span class="tag">SolidWorks</span><span class="tag">3D printing</span></div>
+    <div class="links rv"><a href="assets/papers/Rover_Cruise_Control_AE4610.pdf" target="_blank" rel="noopener">Rover report (PDF) ↗</a><a href="assets/papers/Structural_Integrity_AE3610.pdf" target="_blank" rel="noopener">Structures report (PDF) ↗</a></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 06 · RETURN / ML-BOTS ============ -->
+<section id="return">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 06 · Reentry &amp; Landing · NASA ML-Bots</div>
+    <h2 class="rv">Bringing it back to Earth</h2>
+    <p class="lede rv">As Research Team Lead of a 10-student, NASA-sponsored team, I build embedded machine learning systems on <b>NVIDIA Jetson Orin and Nano</b> robots and travel nationwide putting them in students' hands — sensor wiring, software bring-up, and on-device inference, taught hands-on.</p>
+    <p class="plain rv">ML-Bots introduces younger students to machine learning through robotics: a four-module curriculum from first Python commands to training neural networks that drive a robot. I serve as primary contact with research and industry partners, and I've presented the program's impact to NASA in Washington, D.C. and to congressional staffers on Capitol Hill.</p>
+    <div class="figrow rv">
+      <div class="slot"><figure><img src="assets/photos/jetbot.jpg" alt="ML-Bots Jetson-powered robot" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students testing their Jetson-powered ML-Bot on the shop floor.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/students.jpg" alt="Students programming ML-Bots robots" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students bringing their first ML models to life.</figcaption></figure></div>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><b>10</b><span>student team led</span></div>
+      <div class="stat"><b>15</b><span>interns trained (GSGC)</span></div>
+      <div class="stat"><b>D.C.</b><span>NASA HQ &amp; Capitol Hill</span></div>
+    </div>
+    <div class="figrow three rv">
+      <div class="slot"><figure><img src="assets/photos/capitol-hill.jpg" alt="Presenting on Capitol Hill" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Representing NASA-funded student research on Capitol Hill, 2025 GSGC National Meeting.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/dc-office.jpg" alt="Meeting with congressional staff in Washington D.C." onerror="this.closest('.slot').classList.add('empty')"><figcaption>Meeting with congressional staff to present project outcomes, Washington D.C.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/classroom.jpg" alt="Teaching an ML-Bots session" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Leading an ML-Bots session — from first Python commands to models that drive robots.</figcaption></figure></div>
+    </div>
+    <div class="tags rv"><span class="tag">Jetson Orin / Nano</span><span class="tag">Embedded ML</span><span class="tag">STEM outreach</span><span class="tag">Team leadership</span></div>
+    <div class="links rv"><a href="assets/papers/ML-Bots_Essay.pdf" target="_blank" rel="noopener">Program essay (PDF) ↗</a></div>
+  </div>
+</section>
+
+<!-- ============ TELEMETRY 01 · EXPERIENCE ============ -->
+<section id="experience">
+  <div class="wrap">
+    <div class="stagechip rv">Telemetry 01 · Flight Log</div>
+    <h2 class="rv">Experience</h2>
+    <div class="timeline rv">
+      <div class="tl"><time>Jun – Aug 2026</time><h3>AI &amp; Machine Learning Software Engineer · NASA Marshall Space Flight Center</h3><p>Fine-tuned the Prithvi geospatial foundation model across flood, burn scar, and crop domains; built a from-scratch U-Net that beat the published benchmark; advised a NASA AI-agents team.</p></div>
+      <div class="tl"><time>Jun 2024 – Present</time><h3>Research Assistant (Undergrad → Graduate) · Georgia Tech, NASA ML-Bots</h3><p>Research Team Lead for a 10-student NASA-sponsored team; embedded ML on Jetson hardware; nationwide technical support for distributed research teams.</p></div>
+      <div class="tl"><time>Summers 2024 &amp; 2025</time><h3>Intern &amp; Program Lead · Georgia Space Grant Consortium</h3><p>Led an engineering immersion program in Albany, GA; Engineering Team Lead for marine vehicle and multirotor UAV development; led and trained 15 interns.</p></div>
+      <div class="tl"><time>Dec 2024 – May 2025</time><h3>Teaching Assistant · Intro to AE Vehicle Performance · Georgia Tech</h3><p>Designed a hands-on flight-simulation lab project using X-Plane Pro and Simulink.</p></div>
+      <div class="tl"><time>Aug – Dec 2024</time><h3>Teaching Assistant · Dynamics · Georgia Tech</h3><p>Developed problems and led recitation sessions, working solutions by hand and in MATLAB.</p></div>
+      <div class="tl"><time>Spring 2025</time><h3>National Student Representative · GSGC National Meeting, Washington D.C.</h3><p>Presented team accomplishments to NASA and met with congressional staffers on Capitol Hill.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELEMETRY 02 · PUBLICATIONS ============ -->
+<section id="publications">
+  <div class="wrap">
+    <div class="stagechip rv">Telemetry 02 · Publications &amp; Technical Reports</div>
+    <h2 class="rv">Publications</h2>
+    <div class="publist rv">
+      <div class="pub"><div><b><a href="assets/papers/ML-Bots_Essay.pdf" target="_blank" rel="noopener">Machine Learning Education Through Embedded Robotics: The NASA ML-Bots Program</a></b><span class="meta">Erik Goeke et al. · In submission · 2026 · <a href="assets/papers/ML-Bots_Essay.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+      <div class="pub"><div><b><a href="assets/papers/NOTLO.pdf" target="_blank" rel="noopener">NOTLO: A NOTAM-Inspired Deconfliction Framework for Lunar Surface Operations</a></b><span class="meta">Erik Goeke et al. · Technical Report, Georgia Institute of Technology · 2026 · <a href="assets/papers/NOTLO.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+      <div class="pub"><div><b><a href="assets/papers/STICKR.pdf" target="_blank" rel="noopener">STICKR: Surface Tension Induced Climbing Kinematic Robot</a></b><span class="meta">Erik Goeke, Ryan Cohen · Technical Report, Georgia Institute of Technology · 2026 · <a href="assets/papers/STICKR.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+      <div class="pub"><div><b><a href="assets/papers/Rapid_Planetary_Defense.pdf" target="_blank" rel="noopener">Rapid Planetary Defense: A System of Systems Approach</a></b><span class="meta">Erik Goeke et al. · Technical Report, Georgia Institute of Technology · 2026 · <a href="assets/papers/Rapid_Planetary_Defense.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+      <div class="pub"><div><b><a href="assets/papers/Rover_Cruise_Control_AE4610.pdf" target="_blank" rel="noopener">Rover Cruise Control: PID Speed Control Across Variable Terrain</a></b><span class="meta">Erik Goeke et al. · AE 4610 Final Project, Georgia Institute of Technology · 2025 · <a href="assets/papers/Rover_Cruise_Control_AE4610.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+      <div class="pub"><div><b><a href="assets/papers/Structural_Integrity_AE3610.pdf" target="_blank" rel="noopener">Evaluating Cross-Sectional Designs for Aerospace Structural Integrity</a></b><span class="meta">Erik Goeke et al. · AE 3610, Georgia Institute of Technology · 2024 · <a href="assets/papers/Structural_Integrity_AE3610.pdf" target="_blank" rel="noopener">PDF ↗</a></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELEMETRY 03 · AWARDS + MANIFEST ============ -->
+<section id="awards">
+  <div class="wrap">
+    <div class="stagechip rv">Telemetry 03 · Awards &amp; Additional Payloads</div>
+    <h2 class="rv">Awards &amp; other missions</h2>
+    <div class="grid2 rv">
+      <div class="card"><h3><span>Fellowship</span>GSGC Outstanding Achievement Fellowship</h3><p>For academic excellence and contribution to aerospace research.</p></div>
+      <div class="card"><h3><span>1st Place</span>Best Research Project &amp; Presentation</h3><p>Georgia Space Grant Consortium Affiliated Meeting.</p></div>
+      <div class="card"><h3><span>Scholarship</span>Zell Miller &amp; HOPE Scholarship</h3><p>Merit-based academic scholarships.</p></div>
+      <div class="card"><h3><span>Recognition</span>Honeywell industry feedback — STICKR</h3><p>Presented zero-g flight results to Honeywell aerospace engineers; recognized for the novel application of ferrofluid adhesion.</p></div>
+      <div class="card"><h3><span>Propulsion</span>Airbus A380 JATO system design</h3><p>Full propulsion design with characteristic velocity, specific-heat-ratio, and pressure-coefficient analysis.</p></div>
+      <div class="card"><h3><span>Advisory</span>Technical Advisor, DARPA Lift Challenge</h3><p>Guided VTOL aerodynamic analysis, payload-to-weight optimization, and performance trade studies.</p></div>
+    </div>
+    <div class="tags rv" style="margin-top:1.6rem">
+      <span class="tag">Python</span><span class="tag">MATLAB</span><span class="tag">Java</span><span class="tag">PyTorch</span><span class="tag">SolidWorks</span><span class="tag">X-Plane</span><span class="tag">Xfoil</span><span class="tag">English · Swedish (native)</span><span class="tag">Spanish (conversational)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="stagechip rv" style="text-align:center">End of Transmission · Touchdown</div>
+    <h2 class="rv">Let's build the next mission</h2>
+    <p class="plain rv" style="margin:0 auto 1.6rem">Open to aerospace and ML opportunities.</p>
+    <p class="rv"><a class="email" href="mailto:erikgoeke@gmail.com">erikgoeke@gmail.com</a></p>
+    <div class="links rv" style="justify-content:center">
+      <a href="https://www.linkedin.com/in/erik-goeke/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>© <span id="yr"></span> Erik Goeke · Built with Three.js · Hosted on GitHub Pages</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ---------- mission clock ---------- */
+const t0 = Date.now();
+setInterval(()=>{
+  const s = Math.floor((Date.now()-t0)/1000);
+  const p = n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    'T+ '+p(Math.floor(s/3600))+':'+p(Math.floor(s/60)%60)+':'+p(s%60);
+},1000);
+
+/* ---------- reveal on scroll ---------- */
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('vis'); io.unobserve(e.target);} }),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ---------- nav highlighting + HUD phase ---------- */
+const phases = [
+  {id:'launch',       name:'PRELAUNCH', alt:0,    vel:0},
+  {id:'leo',          name:'LEO',       alt:400,  vel:7.7},
+  {id:'microgravity', name:'COAST',     alt:2000, vel:9.1},
+  {id:'lunar',        name:'TLI',       alt:384400,vel:10.8},
+  {id:'deepspace',    name:'DEEP SPACE',alt:1.2e6,vel:12.4},
+  {id:'surface',      name:'SURFACE OPS',alt:0,   vel:0.4},
+  {id:'return',       name:'REENTRY',   alt:120,  vel:7.9},
+  {id:'experience',   name:'FLIGHT LOG',alt:0,    vel:0},
+  {id:'publications', name:'TELEMETRY', alt:0,    vel:0},
+  {id:'awards',       name:'TELEMETRY', alt:0,    vel:0},
+  {id:'contact',      name:'TOUCHDOWN', alt:0,    vel:0}
+];
+const navLinks = document.querySelectorAll('#nav a');
+const fmtAlt = a => a>=1e6 ? (a/1e6).toFixed(1)+'M KM' : a>=1000 ? Math.round(a/1000)+'K KM' : a+' KM';
+const secIO = new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  const i = phases.findIndex(p=>p.id===e.target.id);
+  if(i<0) return;
+  navLinks.forEach((l,n)=>l.classList.toggle('on',n===i));
+  document.getElementById('phase').textContent = phases[i].name;
+  document.getElementById('alt').textContent = fmtAlt(phases[i].alt);
+  document.getElementById('vel').textContent = phases[i].vel.toFixed(1)+' KM/S';
+}),{threshold:.4});
+phases.forEach(p=>{ const el=document.getElementById(p.id); if(el) secIO.observe(el); });
+
+/* ---------- three.js scene ---------- */
+let renderer;
+try{
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('scene'),antialias:true,alpha:true});
+}catch(e){ document.body.classList.add('no3d'); return; }
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x05070f, 0.00115);
+const cam = new THREE.PerspectiveCamera(58, innerWidth/innerHeight, .1, 4000);
+
+scene.add(new THREE.AmbientLight(0x334466, .8));
+const sun = new THREE.DirectionalLight(0xfff3e0, 1.5); sun.position.set(300,180,200); scene.add(sun);
+const rim = new THREE.DirectionalLight(0x6fe3ff, .5); rim.position.set(-200,-100,-300); scene.add(rim);
+
+/* stars */
+function makeStars(n, spread, size, color){
+  const g = new THREE.BufferGeometry();
+  const pos = new Float32Array(n*3);
+  for(let i=0;i<n*3;i++) pos[i]=(Math.random()-.5)*spread;
+  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  return new THREE.Points(g, new THREE.PointsMaterial({color,size,sizeAttenuation:true,transparent:true,opacity:.9}));
+}
+for(let z=0; z>-2400; z-=600){
+  const s = makeStars(900, 1400, 1.6, 0xcfe0ff); s.position.z = z-300; scene.add(s);
+}
+
+/* soft glow sprite texture */
+function glowTex(inner, outer){
+  const c=document.createElement('canvas'); c.width=c.height=256;
+  const g=c.getContext('2d');
+  const gr=g.createRadialGradient(128,128,10,128,128,128);
+  gr.addColorStop(0,inner); gr.addColorStop(1,outer);
+  g.fillStyle=gr; g.fillRect(0,0,256,256);
+  return new THREE.CanvasTexture(c);
+}
+
+/* Earth (departure) */
+function makeEarth(){
+  const grp = new THREE.Group();
+  const geo = new THREE.SphereGeometry(120, 48, 48);
+  const mat = new THREE.MeshPhongMaterial({color:0x1a4f8a, emissive:0x07203c, shininess:18});
+  grp.add(new THREE.Mesh(geo, mat));
+  /* continents-ish noise blobs */
+  const land = new THREE.Mesh(new THREE.SphereGeometry(120.5,48,48),
+    new THREE.MeshPhongMaterial({color:0x2e7d4f, transparent:true, opacity:.55,
+      map:(function(){ const c=document.createElement('canvas'); c.width=512;c.height=256;
+        const g=c.getContext('2d'); g.fillStyle='rgba(0,0,0,0)'; g.fillRect(0,0,512,256);
+        g.fillStyle='#fff';
+        for(let i=0;i<70;i++){ const x=Math.random()*512,y=40+Math.random()*176,r=8+Math.random()*30;
+          g.beginPath(); g.ellipse(x,y,r,r*.6,Math.random()*3,0,7); g.fill(); }
+        return new THREE.CanvasTexture(c); })(),
+      alphaMap:null, depthWrite:false}));
+  land.material.alphaMap = land.material.map;
+  grp.add(land);
+  const atm = new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex('rgba(111,190,255,.55)','rgba(111,190,255,0)'),transparent:true,depthWrite:false}));
+  atm.scale.set(340,340,1); grp.add(atm);
+  return grp;
+}
+const earth = makeEarth(); earth.position.set(-40,-170,-120); scene.add(earth);
+
+/* LEO scan ring + orbit wireframe */
+const scan = new THREE.Mesh(new THREE.TorusGeometry(150, .7, 8, 120),
+  new THREE.MeshBasicMaterial({color:0x6fe3ff, transparent:true, opacity:.5}));
+scan.position.copy(earth.position); scan.rotation.x = Math.PI/2.3; scene.add(scan);
+
+/* trajectory line through the whole mission */
+const path = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-40,-40,-60), new THREE.Vector3(40,10,-350),
+  new THREE.Vector3(-30,20,-700), new THREE.Vector3(60,0,-1050),
+  new THREE.Vector3(-20,-10,-1450), new THREE.Vector3(0,-30,-1850)
+]);
+const traj = new THREE.Mesh(new THREE.TubeGeometry(path, 120, .5, 6, false),
+  new THREE.MeshBasicMaterial({color:0xffb454, transparent:true, opacity:.35}));
+scene.add(traj);
+
+/* microgravity: drifting particles + tiny STICKR-ish cube bot */
+const drift = makeStars(220, 260, 2.4, 0x7dffb2); drift.position.set(0,0,-560); scene.add(drift);
+
+/* Moon */
+const moon = new THREE.Mesh(new THREE.SphereGeometry(55, 40, 40),
+  new THREE.MeshPhongMaterial({color:0x9aa2ad, emissive:0x14161a, shininess:4}));
+moon.position.set(85, 25, -980); scene.add(moon);
+/* craters */
+for(let i=0;i<26;i++){
+  const r = 2+Math.random()*6;
+  const cr = new THREE.Mesh(new THREE.CircleGeometry(r, 20),
+    new THREE.MeshPhongMaterial({color:0x7d848e, side:THREE.DoubleSide}));
+  const v = new THREE.Vector3().setFromSphericalCoords(55.15, Math.acos(2*Math.random()-1), Math.random()*Math.PI*2);
+  cr.position.copy(v).add(moon.position); cr.lookAt(moon.position); scene.add(cr);
+}
+
+/* asteroid field */
+const asteroids = new THREE.Group();
+const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+const rockMat = new THREE.MeshPhongMaterial({color:0x8a7a68, flatShading:true, emissive:0x1a140e});
+for(let i=0;i<140;i++){
+  const m = new THREE.Mesh(rockGeo, rockMat);
+  m.position.set((Math.random()-.5)*700, (Math.random()-.5)*380, -1150 - Math.random()*550);
+  const s = 1+Math.random()*9; m.scale.set(s,s*(.6+Math.random()*.8),s);
+  m.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);
+  m.userData.spin = (Math.random()-.5)*.01;
+  asteroids.add(m);
+}
+scene.add(asteroids);
+
+/* Mars — surface operations */
+const mars = new THREE.Mesh(new THREE.SphereGeometry(42, 40, 40),
+  new THREE.MeshPhongMaterial({color:0xb5552e, emissive:0x2a0f06, shininess:6}));
+mars.position.set(-75, -5, -1820); scene.add(mars);
+const marsGlow = new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex('rgba(255,140,80,.3)','rgba(255,140,80,0)'),transparent:true,depthWrite:false}));
+marsGlow.scale.set(120,120,1); marsGlow.position.copy(mars.position); scene.add(marsGlow);
+
+/* return Earth */
+const earth2 = makeEarth(); earth2.scale.set(1.5,1.5,1.5); earth2.position.set(30,-260,-2120); scene.add(earth2);
+
+/* ---------- scroll-driven camera ---------- */
+let scrollP = 0;
+function onScroll(){
+  const max = document.documentElement.scrollHeight - innerHeight;
+  scrollP = max>0 ? window.scrollY/max : 0;
+}
+addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+function resize(){
+  renderer.setSize(innerWidth, innerHeight);
+  cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 0;
+function tick(){
+  requestAnimationFrame(tick);
+  t += .008;
+  /* camera travels the mission as you scroll; telemetry sections hold at the end */
+  const travel = Math.min(scrollP/.64, 1);           /* stages occupy first ~64% of page */
+  const z = 160 - travel*2050;
+  cam.position.set(
+    Math.sin(travel*Math.PI*2)*26 + (reduced?0:Math.sin(t*.7)*2),
+    10 + Math.sin(travel*Math.PI*3)*14 + (reduced?0:Math.cos(t*.5)*1.5),
+    z);
+  cam.lookAt(cam.position.x*.4, cam.position.y*.4, z-260);
+
+  if(!reduced){
+    earth.rotation.y += .0008; earth2.rotation.y += .0008;
+    moon.rotation.y += .0004; mars.rotation.y += .0006;
+    scan.rotation.z += .004;
+    drift.rotation.y += .0012; drift.rotation.x += .0005;
+    asteroids.children.forEach(a=>{ a.rotation.y += a.userData.spin; a.rotation.x += a.userData.spin*.6; });
+  }
+  renderer.render(scene, cam);
+}
+tick();
+})();
+</script>
+</body>
+</html>
