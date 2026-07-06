@@ -85,9 +85,19 @@ figcaption{font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:.6r
 #launch h1{font-size:clamp(2.6rem,7.5vw,5.2rem);margin-bottom:1.2rem}
 #launch h1 em{font-style:normal;color:var(--cyan)}
 .hero-grid{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start}
-.headshot{width:180px;border-radius:12px;border:1px solid var(--line);overflow:hidden;box-shadow:0 0 40px rgba(111,227,255,.12)}
-.headshot img{width:100%;display:block}
-@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:140px}}
+.headshot{width:270px;position:relative;margin:14px}
+.headshot img{width:100%;display:block;border-radius:50%;border:2px solid rgba(111,227,255,.45);
+  box-shadow:0 0 70px rgba(111,227,255,.3),inset 0 0 30px rgba(111,227,255,.15)}
+.headshot::before{content:"";position:absolute;inset:-14px;border-radius:50%;
+  border:1px dashed rgba(111,227,255,.45);animation:orbit 26s linear infinite}
+.headshot::after{content:"";position:absolute;top:-18px;left:50%;width:9px;height:9px;margin-left:-4px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 12px var(--amber);transform-origin:4.5px calc(50% + 18px + 135px);
+  animation:orbit 26s linear infinite}
+.headshot figcaption{position:absolute;left:50%;bottom:-2.4rem;transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--cyan);text-transform:uppercase;padding:0}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:190px}
+  .headshot::after{transform-origin:4.5px calc(50% + 18px + 95px)}}
 .badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.5rem 0}
 .badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--amber);border:1px solid rgba(255,180,84,.3);
   border-radius:99px;padding:.32rem .8rem}
@@ -149,11 +159,11 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <nav id="nav">
   <a href="#launch"><i>Launch</i></a>
   <a href="#leo"><i>Earth · ML</i></a>
+  <a href="#return"><i>ML-Bots</i></a>
   <a href="#microgravity"><i>Microgravity</i></a>
   <a href="#lunar"><i>Moon</i></a>
   <a href="#deepspace"><i>Deep space</i></a>
   <a href="#surface"><i>Surface ops</i></a>
-  <a href="#return"><i>Return · ML-Bots</i></a>
   <a href="#experience"><i>Experience</i></a>
   <a href="#publications"><i>Publications</i></a>
   <a href="#awards"><i>Awards</i></a>
@@ -180,7 +190,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
           <a class="cta ghost" href="#publications">Publications</a>
         </div>
       </div>
-      <div class="slot rv"><figure class="headshot"><img src="assets/photos/headshot.jpg" alt="Erik Goeke" onerror="this.closest('.slot').classList.add('empty')"></figure></div>
+      <div class="slot rv"><figure class="headshot"><img src="assets/photos/headshot.jpg" alt="Erik Goeke" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Crew · E.W. Goeke · GT AE</figcaption></figure></div>
     </div>
   </div>
   <div class="scrollhint">Scroll to begin the mission</div>
@@ -206,10 +216,37 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
     <div class="tags rv"><span class="tag">PyTorch</span><span class="tag">HuggingFace</span><span class="tag">TorchGeo</span><span class="tag">W&amp;B</span><span class="tag">Semantic segmentation</span></div>
   </div>
 </section>
+<!-- ============ STAGE 02 · RETURN / ML-BOTS ============ -->
+<section id="return">
+  <div class="wrap">
+    <div class="stagechip rv">Stage 02 · Downlink · NASA ML-Bots</div>
+    <h2 class="rv">Bringing It Back to Earth</h2>
+    <p class="lede rv">As Research Team Lead of a 10-student, NASA-sponsored team, I build embedded machine learning systems on <b>NVIDIA Jetson Orin and Nano</b> robots and travel nationwide putting them in students' hands — sensor wiring, software bring-up, and on-device inference, taught hands-on.</p>
+    <p class="plain rv">ML-Bots introduces younger students to machine learning through robotics: a four-module curriculum from first Python commands to training neural networks that drive a robot. I serve as primary contact with research and industry partners, and I've presented the program's impact to NASA in Washington, D.C. and to congressional staffers on Capitol Hill.</p>
+    <div class="figrow rv">
+      <div class="slot"><figure><img src="assets/photos/capitol-hill.jpg" alt="Presenting on Capitol Hill" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Representing NASA-funded student research on Capitol Hill, 2025 GSGC National Meeting.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/students.jpg" alt="Students programming ML-Bots robots" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students bringing their first ML models to life.</figcaption></figure></div>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><b>10</b><span>student research team led</span></div>
+      <div class="stat"><b>15</b><span>interns led &amp; trained (GSGC)</span></div>
+      <div class="stat"><b>4</b><span>module ML curriculum</span></div>
+      <div class="stat"><b>D.C.</b><span>NASA HQ &amp; Capitol Hill</span></div>
+    </div>
+    <div class="figrow three rv">
+      <div class="slot"><figure><img src="assets/photos/jetbot.jpg" alt="ML-Bots Jetson-powered robot" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students testing their Jetson-powered ML-Bot on the shop floor.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/dc-office.jpg" alt="Meeting with congressional staff in Washington D.C." onerror="this.closest('.slot').classList.add('empty')"><figcaption>Meeting with congressional staff to present project outcomes, Washington D.C.</figcaption></figure></div>
+      <div class="slot"><figure><img src="assets/photos/classroom.jpg" alt="Teaching an ML-Bots session" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Leading an ML-Bots session — from first Python commands to models that drive robots.</figcaption></figure></div>
+    </div>
+    <div class="tags rv"><span class="tag">Jetson Orin / Nano</span><span class="tag">Embedded ML</span><span class="tag">STEM outreach</span><span class="tag">Team leadership</span></div>
+    <div class="links rv"><a href="assets/papers/ML-Bots_Essay.pdf" target="_blank" rel="noopener">Program essay (PDF) ↗</a></div>
+  </div>
+</section>
+
 <!-- ============ STAGE 02 · MICROGRAVITY / STICKR ============ -->
 <section id="microgravity">
   <div class="wrap">
-    <div class="stagechip rv">Stage 02 · Microgravity Coast · Space Robotics</div>
+    <div class="stagechip rv">Stage 03 · Microgravity Coast · Space Robotics</div>
     <h2 class="rv">STICKR — A Robot That Sticks to Anything in Zero-G</h2>
     <p class="lede rv">The Surface Tension Induced Climbing Kinematic Robot uses <b>ferrofluid</b> — a magnetic liquid — as its adhesion mechanism, letting a small tracked robot drive on any surface in microgravity with no thrusters, no gravity, and no requirement that the surface be magnetic.</p>
     <p class="plain rv">In orbit, wheels and legs are nearly useless: nothing pushes you into the floor. Thruster-based robots like Astrobee work, but cost power and complexity. STICKR holds itself down with the surface tension of a fluid pinned to its treads by magnets — and we proved it aboard a parabolic zero-gravity flight, presenting the results to Honeywell aerospace engineers.</p>
@@ -231,7 +268,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <!-- ============ STAGE 03 · LUNAR TRANSFER / NOTLO ============ -->
 <section id="lunar">
   <div class="wrap">
-    <div class="stagechip rv">Stage 03 · Lunar Transfer · Space Sustainability</div>
+    <div class="stagechip rv">Stage 04 · Lunar Transfer · Space Sustainability</div>
     <h2 class="rv">NOTLO — Air Traffic Control for the Moon</h2>
     <p class="lede rv">A NOTAM-inspired deconfliction framework for high-cadence lunar surface operations: standardized, machine-readable notices — <b>DUSTLO</b> for regolith plumes, <b>RADLO</b> for radiation hazards, <b>EXPLO</b> for protected experiments — so lunar operators can coordinate without stepping on each other.</p>
     <p class="plain rv">Aviation's NOTAM system keeps pilots informed but is famously unreadable. NOTLO redesigns the idea for the Moon: plain-language notices with consistent structure, a queryable central database, and priority filtering so operators only see what affects them. Shared with the Open Lunar Foundation for consideration in ongoing lunar-governance efforts.</p>
@@ -251,7 +288,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <!-- ============ STAGE 04 · DEEP SPACE / PLANETARY DEFENSE ============ -->
 <section id="deepspace">
   <div class="wrap">
-    <div class="stagechip rv">Stage 04 · Deep Space · Planetary Defense</div>
+    <div class="stagechip rv">Stage 05 · Deep Space · Planetary Defense</div>
     <h2 class="rv">Rapid Planetary Defense — A System of Systems</h2>
     <p class="lede rv">As <b>Integration Engineer</b> on Georgia Tech's Grand Challenge team, I coordinated threat detection, orbital analysis, and asteroid deflection architecture across kinetic-impactor and ablation-based mitigation strategies — a rapid-response system of systems for near-Earth object threats.</p>
     <p class="plain rv">DART proved we can nudge an asteroid — given years of warning. The harder problem is the one we find late. I ran simulations modeling asteroid threat scenarios and contributed to mission-architecture trade studies and deflection feasibility analysis: how fast can detection, launch, and mitigation chain together when the clock is short?</p>
@@ -269,7 +306,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <!-- ============ STAGE 05 · SURFACE OPS / ROVER + STRUCTURES ============ -->
 <section id="surface">
   <div class="wrap">
-    <div class="stagechip rv">Stage 05 · Surface Operations · Vehicle Engineering</div>
+    <div class="stagechip rv">Stage 06 · Surface Operations · Vehicle Engineering</div>
     <h2 class="rv">Machines That Survive the Field</h2>
     <p class="lede rv">Two ground campaigns: a <b>Mars-inspired rover</b> holding constant speed over changing terrain with a hand-tuned PID controller, and a <b>structural test campaign</b> crushing 3D-printed spar designs to failure to find the strongest cross-section.</p>
     <div class="figrow rv">
@@ -288,33 +325,6 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
     </div>
     <div class="tags rv"><span class="tag">Control systems</span><span class="tag">Simulink</span><span class="tag">Arduino</span><span class="tag">Instron testing</span><span class="tag">SolidWorks</span><span class="tag">3D printing</span></div>
     <div class="links rv"><a href="assets/papers/Rover_Cruise_Control_AE4610.pdf" target="_blank" rel="noopener">Rover report (PDF) ↗</a><a href="assets/papers/Structural_Integrity_AE3610.pdf" target="_blank" rel="noopener">Structures report (PDF) ↗</a></div>
-  </div>
-</section>
-
-<!-- ============ STAGE 06 · RETURN / ML-BOTS ============ -->
-<section id="return">
-  <div class="wrap">
-    <div class="stagechip rv">Stage 06 · Reentry &amp; Landing · NASA ML-Bots</div>
-    <h2 class="rv">Bringing It Back to Earth</h2>
-    <p class="lede rv">As Research Team Lead of a 10-student, NASA-sponsored team, I build embedded machine learning systems on <b>NVIDIA Jetson Orin and Nano</b> robots and travel nationwide putting them in students' hands — sensor wiring, software bring-up, and on-device inference, taught hands-on.</p>
-    <p class="plain rv">ML-Bots introduces younger students to machine learning through robotics: a four-module curriculum from first Python commands to training neural networks that drive a robot. I serve as primary contact with research and industry partners, and I've presented the program's impact to NASA in Washington, D.C. and to congressional staffers on Capitol Hill.</p>
-    <div class="figrow rv">
-      <div class="slot"><figure><img src="assets/photos/jetbot.jpg" alt="ML-Bots Jetson-powered robot" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students testing their Jetson-powered ML-Bot on the shop floor.</figcaption></figure></div>
-      <div class="slot"><figure><img src="assets/photos/students.jpg" alt="Students programming ML-Bots robots" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students bringing their first ML models to life.</figcaption></figure></div>
-    </div>
-    <div class="stats rv">
-      <div class="stat"><b>10</b><span>student research team led</span></div>
-      <div class="stat"><b>15</b><span>interns led &amp; trained (GSGC)</span></div>
-      <div class="stat"><b>4</b><span>module ML curriculum</span></div>
-      <div class="stat"><b>D.C.</b><span>NASA HQ &amp; Capitol Hill</span></div>
-    </div>
-    <div class="figrow three rv">
-      <div class="slot"><figure><img src="assets/photos/capitol-hill.jpg" alt="Presenting on Capitol Hill" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Representing NASA-funded student research on Capitol Hill, 2025 GSGC National Meeting.</figcaption></figure></div>
-      <div class="slot"><figure><img src="assets/photos/dc-office.jpg" alt="Meeting with congressional staff in Washington D.C." onerror="this.closest('.slot').classList.add('empty')"><figcaption>Meeting with congressional staff to present project outcomes, Washington D.C.</figcaption></figure></div>
-      <div class="slot"><figure><img src="assets/photos/classroom.jpg" alt="Teaching an ML-Bots session" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Leading an ML-Bots session — from first Python commands to models that drive robots.</figcaption></figure></div>
-    </div>
-    <div class="tags rv"><span class="tag">Jetson Orin / Nano</span><span class="tag">Embedded ML</span><span class="tag">STEM outreach</span><span class="tag">Team leadership</span></div>
-    <div class="links rv"><a href="assets/papers/ML-Bots_Essay.pdf" target="_blank" rel="noopener">Program essay (PDF) ↗</a></div>
   </div>
 </section>
 
@@ -407,11 +417,11 @@ document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 const phases = [
   {id:'launch',       name:'PRELAUNCH', alt:0,    vel:0},
   {id:'leo',          name:'LEO',       alt:400,  vel:7.7},
+  {id:'return',       name:'DOWNLINK',  alt:400,  vel:7.7},
   {id:'microgravity', name:'COAST',     alt:2000, vel:9.1},
   {id:'lunar',        name:'TLI',       alt:384400,vel:10.8},
   {id:'deepspace',    name:'DEEP SPACE',alt:1.2e6,vel:12.4},
   {id:'surface',      name:'SURFACE OPS',alt:0,   vel:0.4},
-  {id:'return',       name:'REENTRY',   alt:120,  vel:7.9},
   {id:'experience',   name:'FLIGHT LOG',alt:0,    vel:0},
   {id:'publications', name:'TELEMETRY', alt:0,    vel:0},
   {id:'awards',       name:'TELEMETRY', alt:0,    vel:0},
