@@ -89,8 +89,8 @@ figcaption{font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:.6r
 .headshot img{width:100%;display:block}
 @media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:140px}}
 .badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.5rem 0}
-.badge{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--amber);border:1px solid rgba(255,180,84,.3);
-  border-radius:99px;padding:.32rem .8rem;text-transform:uppercase}
+.badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--amber);border:1px solid rgba(255,180,84,.3);
+  border-radius:99px;padding:.32rem .8rem}
 .cta{display:inline-block;font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
   border:1px solid var(--cyan);border-radius:8px;padding:.75rem 1.4rem;margin-right:.9rem;margin-top:.6rem;transition:.25s}
 .cta:hover{background:var(--cyan);color:#04121c;text-decoration:none;box-shadow:0 0 22px rgba(111,227,255,.4)}
@@ -171,9 +171,9 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
         <p class="lede rv">Aerospace engineer building machine learning systems and space robotics — fine-tuning NASA's geospatial foundation models, flying ferrofluid robots in zero gravity, and architecting planetary defense.</p>
         <p class="plain rv">M.S. Aerospace Engineering at Georgia Tech (Dec 2026), B.S. with Honor (2025). I lead research teams, take hardware from CAD to flight test, and represent NASA-funded student research at the national level — from NASA Headquarters to Capitol Hill.</p>
         <div class="badges rv">
-          <span class="badge">GSGC Outstanding Achievement Fellowship</span>
-          <span class="badge">1st Place · Best Research Project</span>
-          <span class="badge">NASA ML-Bots Team Lead</span>
+          <span class="badge">NASA ML-Bots Research Team Lead</span>
+          <span class="badge">GSGC Outstanding Achievement Fellow</span>
+          <span class="badge">1st Place Research — GSGC Statewide Meeting</span>
         </div>
         <div class="rv">
           <a class="cta" href="#leo">Begin ascent</a>
@@ -190,7 +190,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="leo">
   <div class="wrap">
     <div class="stagechip rv">Stage 01 · Low Earth Orbit · Earth Observation</div>
-    <h2 class="rv">Teaching AI to read the Earth</h2>
+    <h2 class="rv">Teaching AI to Read the Earth</h2>
     <p class="lede rv">At NASA Marshall Space Flight Center, I fine-tuned the <b>Prithvi</b> geospatial foundation model across three Earth-observation domains — flood detection, burn scar mapping, and crop segmentation — building end-to-end pipelines from dataset curation and augmentation through training, hyperparameter optimization, and evaluation on real multispectral satellite imagery.</p>
     <p class="plain rv">Satellites photograph every corner of the planet every few days. Foundation models like Prithvi learn from that archive so a little extra training lets them map a flood or trace a wildfire's scar anywhere on Earth. My job was that extra training — and then asking a harder question: does it have to be this big?</p>
     <div class="panel rv">
@@ -198,8 +198,9 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
     </div>
     <div class="stats rv">
       <div class="stat"><b>3</b><span>EO domains fine-tuned</span></div>
-      <div class="stat"><b>U-Net</b><span>from scratch, beat benchmark</span></div>
-      <div class="stat"><b>NASA</b><span>multispectral datasets</span></div>
+      <div class="stat"><b>&gt;SOTA</b><span>U-Net beat published benchmark</span></div>
+      <div class="stat"><b>PB-scale</b><span>foundation model adapted</span></div>
+      <div class="stat"><b>100%</b><span>pipeline built end-to-end</span></div>
     </div>
     <p class="plain rv">I also advised a NASA AI-agents team on architecture selection, task design, and applied-ML practice — training strategies, evaluation frameworks, and system integration.</p>
     <div class="tags rv"><span class="tag">PyTorch</span><span class="tag">HuggingFace</span><span class="tag">TorchGeo</span><span class="tag">W&amp;B</span><span class="tag">Semantic segmentation</span></div>
@@ -209,7 +210,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="microgravity">
   <div class="wrap">
     <div class="stagechip rv">Stage 02 · Microgravity Coast · Space Robotics</div>
-    <h2 class="rv">STICKR — a robot that sticks to anything in zero-g</h2>
+    <h2 class="rv">STICKR — A Robot That Sticks to Anything in Zero-G</h2>
     <p class="lede rv">The Surface Tension Induced Climbing Kinematic Robot uses <b>ferrofluid</b> — a magnetic liquid — as its adhesion mechanism, letting a small tracked robot drive on any surface in microgravity with no thrusters, no gravity, and no requirement that the surface be magnetic.</p>
     <p class="plain rv">In orbit, wheels and legs are nearly useless: nothing pushes you into the floor. Thruster-based robots like Astrobee work, but cost power and complexity. STICKR holds itself down with the surface tension of a fluid pinned to its treads by magnets — and we proved it aboard a parabolic zero-gravity flight, presenting the results to Honeywell aerospace engineers.</p>
     <div class="figrow rv">
@@ -217,9 +218,10 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
       <figure><img src="assets/stickr/stickr-cad.jpg" alt="SolidWorks CAD render of the STICKR tank-tread design"><figcaption>SolidWorks design — tank drive chosen to maximize fluid contact perimeter.</figcaption></figure>
     </div>
     <div class="stats rv">
-      <div class="stat"><b>0-g</b><span>parabolic flight tested</span></div>
+      <div class="stat"><b>0-g</b><span>parabolic flight validated</span></div>
+      <div class="stat"><b>~15 s</b><span>microgravity per parabola</span></div>
       <div class="stat"><b>0.5U</b><span>pocket payload class</span></div>
-      <div class="stat"><b>Any</b><span>surface, magnetic or not</span></div>
+      <div class="stat"><b>0</b><span>thrusters required</span></div>
     </div>
     <div class="tags rv"><span class="tag">Ferrofluids</span><span class="tag">Surface tension</span><span class="tag">SolidWorks</span><span class="tag">Arduino</span><span class="tag">3D printing</span></div>
     <div class="links rv"><a href="assets/papers/STICKR.pdf" target="_blank" rel="noopener">Technical report (PDF) ↗</a><span>with Ryan Cohen · Georgia Tech School of Aerospace Engineering</span></div>
@@ -230,7 +232,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="lunar">
   <div class="wrap">
     <div class="stagechip rv">Stage 03 · Lunar Transfer · Space Sustainability</div>
-    <h2 class="rv">NOTLO — air traffic control for the Moon</h2>
+    <h2 class="rv">NOTLO — Air Traffic Control for the Moon</h2>
     <p class="lede rv">A NOTAM-inspired deconfliction framework for high-cadence lunar surface operations: standardized, machine-readable notices — <b>DUSTLO</b> for regolith plumes, <b>RADLO</b> for radiation hazards, <b>EXPLO</b> for protected experiments — so lunar operators can coordinate without stepping on each other.</p>
     <p class="plain rv">Aviation's NOTAM system keeps pilots informed but is famously unreadable. NOTLO redesigns the idea for the Moon: plain-language notices with consistent structure, a queryable central database, and priority filtering so operators only see what affects them. Shared with the Open Lunar Foundation for consideration in ongoing lunar-governance efforts.</p>
     <div class="notlo rv">
@@ -250,13 +252,14 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="deepspace">
   <div class="wrap">
     <div class="stagechip rv">Stage 04 · Deep Space · Planetary Defense</div>
-    <h2 class="rv">Rapid planetary defense, as a system of systems</h2>
+    <h2 class="rv">Rapid Planetary Defense — A System of Systems</h2>
     <p class="lede rv">As <b>Integration Engineer</b> on Georgia Tech's Grand Challenge team, I coordinated threat detection, orbital analysis, and asteroid deflection architecture across kinetic-impactor and ablation-based mitigation strategies — a rapid-response system of systems for near-Earth object threats.</p>
     <p class="plain rv">DART proved we can nudge an asteroid — given years of warning. The harder problem is the one we find late. I ran simulations modeling asteroid threat scenarios and contributed to mission-architecture trade studies and deflection feasibility analysis: how fast can detection, launch, and mitigation chain together when the clock is short?</p>
     <div class="stats rv">
       <div class="stat"><b>SoS</b><span>detection → launch → deflection</span></div>
-      <div class="stat"><b>2</b><span>mitigation families studied</span></div>
-      <div class="stat"><b>NEO</b><span>threat scenario simulation</span></div>
+      <div class="stat"><b>kT–TT</b><span>impact energies classified</span></div>
+      <div class="stat"><b>2</b><span>mitigation families traded</span></div>
+      <div class="stat"><b>53 pg</b><span>architecture report</span></div>
     </div>
     <div class="tags rv"><span class="tag">Systems engineering</span><span class="tag">Orbital mechanics</span><span class="tag">Trade studies</span><span class="tag">Kinetic &amp; ablation</span></div>
     <div class="links rv"><a href="assets/papers/Rapid_Planetary_Defense.pdf" target="_blank" rel="noopener">Technical report (PDF) ↗</a><span>AE 6393/6394 Grand Challenges · advised by Jeffrey McNabb &amp; Dr. Bradford Robertson · Prof. Dimitri Mavris</span></div>
@@ -267,7 +270,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="surface">
   <div class="wrap">
     <div class="stagechip rv">Stage 05 · Surface Operations · Vehicle Engineering</div>
-    <h2 class="rv">Machines that survive the field</h2>
+    <h2 class="rv">Machines That Survive the Field</h2>
     <p class="lede rv">Two ground campaigns: a <b>Mars-inspired rover</b> holding constant speed over changing terrain with a hand-tuned PID controller, and a <b>structural test campaign</b> crushing 3D-printed spar designs to failure to find the strongest cross-section.</p>
     <div class="figrow rv">
       <figure><img src="assets/rover/rover.jpg" alt="Arduino-based PID cruise-control rover with DC motors, motor driver, and GPS"><figcaption>Rover Cruise Control (AE 4610) — Arduino, dual DC motors, GPS; closed-loop PID holds speed across slopes, the way Mars rovers manage inconsistent terrain. I built the rover, wired the motor driver and GPS, wrote the Arduino code, and tuned the gains experimentally.</figcaption></figure>
@@ -278,9 +281,10 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
       <a href="assets/structures/poster-full.jpg" target="_blank" rel="noopener" style="text-decoration:none"><figure><img src="assets/structures/poster-full.jpg" alt="The full AE 3610 research poster"><figcaption>The poster itself — click to view full size.</figcaption></figure></a>
     </div>
     <div class="stats rv">
-      <div class="stat"><b>PID</b><span>closed-loop speed control</span></div>
+      <div class="stat"><b>0.35 m/s</b><span>speed held across slopes</span></div>
+      <div class="stat"><b>3</b><span>PID designs simulated &amp; tuned</span></div>
+      <div class="stat"><b>131 N</b><span>peak fracture load measured</span></div>
       <div class="stat"><b>3</b><span>spar designs tested to failure</span></div>
-      <div class="stat"><b>Instron</b><span>compression campaign</span></div>
     </div>
     <div class="tags rv"><span class="tag">Control systems</span><span class="tag">Simulink</span><span class="tag">Arduino</span><span class="tag">Instron testing</span><span class="tag">SolidWorks</span><span class="tag">3D printing</span></div>
     <div class="links rv"><a href="assets/papers/Rover_Cruise_Control_AE4610.pdf" target="_blank" rel="noopener">Rover report (PDF) ↗</a><a href="assets/papers/Structural_Integrity_AE3610.pdf" target="_blank" rel="noopener">Structures report (PDF) ↗</a></div>
@@ -291,7 +295,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="return">
   <div class="wrap">
     <div class="stagechip rv">Stage 06 · Reentry &amp; Landing · NASA ML-Bots</div>
-    <h2 class="rv">Bringing it back to Earth</h2>
+    <h2 class="rv">Bringing It Back to Earth</h2>
     <p class="lede rv">As Research Team Lead of a 10-student, NASA-sponsored team, I build embedded machine learning systems on <b>NVIDIA Jetson Orin and Nano</b> robots and travel nationwide putting them in students' hands — sensor wiring, software bring-up, and on-device inference, taught hands-on.</p>
     <p class="plain rv">ML-Bots introduces younger students to machine learning through robotics: a four-module curriculum from first Python commands to training neural networks that drive a robot. I serve as primary contact with research and industry partners, and I've presented the program's impact to NASA in Washington, D.C. and to congressional staffers on Capitol Hill.</p>
     <div class="figrow rv">
@@ -299,8 +303,9 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
       <div class="slot"><figure><img src="assets/photos/students.jpg" alt="Students programming ML-Bots robots" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Students bringing their first ML models to life.</figcaption></figure></div>
     </div>
     <div class="stats rv">
-      <div class="stat"><b>10</b><span>student team led</span></div>
-      <div class="stat"><b>15</b><span>interns trained (GSGC)</span></div>
+      <div class="stat"><b>10</b><span>student research team led</span></div>
+      <div class="stat"><b>15</b><span>interns led &amp; trained (GSGC)</span></div>
+      <div class="stat"><b>4</b><span>module ML curriculum</span></div>
       <div class="stat"><b>D.C.</b><span>NASA HQ &amp; Capitol Hill</span></div>
     </div>
     <div class="figrow three rv">
@@ -319,9 +324,9 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
     <div class="stagechip rv">Telemetry 01 · Flight Log</div>
     <h2 class="rv">Experience</h2>
     <div class="timeline rv">
+      <div class="tl"><time>Jun 2024 – Present</time><h3>Research Team Lead · Georgia Tech, NASA ML-Bots</h3><p>Lead a 10-student NASA-sponsored research team — day-to-day coordination, primary contact for external research and industry partners, nationwide technical support for distributed teams; embedded ML on Jetson hardware.</p></div>
+      <div class="tl"><time>Summers 2024 &amp; 2025</time><h3>Program Lead &amp; Engineering Team Lead · Georgia Space Grant Consortium</h3><p>Led an engineering immersion program in Albany, GA; Engineering Team Lead for marine vehicle and multirotor UAV development; led and trained 15 interns.</p></div>
       <div class="tl"><time>Jun – Aug 2026</time><h3>AI &amp; Machine Learning Software Engineer · NASA Marshall Space Flight Center</h3><p>Fine-tuned the Prithvi geospatial foundation model across flood, burn scar, and crop domains; built a from-scratch U-Net that beat the published benchmark; advised a NASA AI-agents team.</p></div>
-      <div class="tl"><time>Jun 2024 – Present</time><h3>Research Assistant (Undergrad → Graduate) · Georgia Tech, NASA ML-Bots</h3><p>Research Team Lead for a 10-student NASA-sponsored team; embedded ML on Jetson hardware; nationwide technical support for distributed research teams.</p></div>
-      <div class="tl"><time>Summers 2024 &amp; 2025</time><h3>Intern &amp; Program Lead · Georgia Space Grant Consortium</h3><p>Led an engineering immersion program in Albany, GA; Engineering Team Lead for marine vehicle and multirotor UAV development; led and trained 15 interns.</p></div>
       <div class="tl"><time>Dec 2024 – May 2025</time><h3>Teaching Assistant · Intro to AE Vehicle Performance · Georgia Tech</h3><p>Designed a hands-on flight-simulation lab project using X-Plane Pro and Simulink.</p></div>
       <div class="tl"><time>Aug – Dec 2024</time><h3>Teaching Assistant · Dynamics · Georgia Tech</h3><p>Developed problems and led recitation sessions, working solutions by hand and in MATLAB.</p></div>
       <div class="tl"><time>Spring 2025</time><h3>National Student Representative · GSGC National Meeting, Washington D.C.</h3><p>Presented team accomplishments to NASA and met with congressional staffers on Capitol Hill.</p></div>
@@ -349,10 +354,10 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="awards">
   <div class="wrap">
     <div class="stagechip rv">Telemetry 03 · Awards &amp; Additional Payloads</div>
-    <h2 class="rv">Awards &amp; other missions</h2>
+    <h2 class="rv">Awards &amp; Other Missions</h2>
     <div class="grid2 rv">
       <div class="card"><h3><span>Fellowship</span>GSGC Outstanding Achievement Fellowship</h3><p>For academic excellence and contribution to aerospace research.</p></div>
-      <div class="card"><h3><span>1st Place</span>Best Research Project &amp; Presentation</h3><p>Georgia Space Grant Consortium Affiliated Meeting.</p></div>
+      <div class="card"><h3><span>1st Place</span>Top Research Project &amp; Presentation, GSGC Statewide Meeting</h3><p>Ranked first among NASA Space Grant research teams across Georgia.</p></div>
       <div class="card"><h3><span>Scholarship</span>Zell Miller &amp; HOPE Scholarship</h3><p>Merit-based academic scholarships.</p></div>
       <div class="card"><h3><span>Recognition</span>Honeywell industry feedback — STICKR</h3><p>Presented zero-g flight results to Honeywell aerospace engineers; recognized for the novel application of ferrofluid adhesion.</p></div>
       <div class="card"><h3><span>Propulsion</span>Airbus A380 JATO system design</h3><p>Full propulsion design with characteristic velocity, specific-heat-ratio, and pressure-coefficient analysis.</p></div>
@@ -368,7 +373,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="contact">
   <div class="wrap">
     <div class="stagechip rv" style="text-align:center">End of Transmission · Touchdown</div>
-    <h2 class="rv">Let's build the next mission</h2>
+    <h2 class="rv">Let's Build the Next Mission</h2>
     <p class="plain rv" style="margin:0 auto 1.6rem">Open to aerospace and ML opportunities.</p>
     <p class="rv"><a class="email" href="mailto:erikgoeke@gmail.com">erikgoeke@gmail.com</a></p>
     <div class="links rv" style="justify-content:center">
