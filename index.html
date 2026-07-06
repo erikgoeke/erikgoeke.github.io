@@ -85,19 +85,30 @@ figcaption{font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:.6r
 #launch h1{font-size:clamp(2.6rem,7.5vw,5.2rem);margin-bottom:1.2rem}
 #launch h1 em{font-style:normal;color:var(--cyan)}
 .hero-grid{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start}
-.headshot{width:270px;position:relative;margin:14px}
-.headshot img{width:100%;display:block;border-radius:50%;border:2px solid rgba(111,227,255,.45);
-  box-shadow:0 0 70px rgba(111,227,255,.3),inset 0 0 30px rgba(111,227,255,.15)}
-.headshot::before{content:"";position:absolute;inset:-14px;border-radius:50%;
-  border:1px dashed rgba(111,227,255,.45);animation:orbit 26s linear infinite}
-.headshot::after{content:"";position:absolute;top:-18px;left:50%;width:9px;height:9px;margin-left:-4px;border-radius:50%;
-  background:var(--amber);box-shadow:0 0 12px var(--amber);transform-origin:4.5px calc(50% + 18px + 135px);
-  animation:orbit 26s linear infinite}
-.headshot figcaption{position:absolute;left:50%;bottom:-2.4rem;transform:translateX(-50%);white-space:nowrap;
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--cyan);text-transform:uppercase;padding:0}
+.slot figure.headshot{border:none;background:transparent;overflow:visible;border-radius:0}
+.headshot{width:350px;position:relative;margin:26px 26px 3rem}
+.headshot .ringwrap{position:absolute;inset:-13px;border-radius:50%;padding:3px;
+  background:conic-gradient(from 0deg,transparent 0 40deg,var(--cyan) 90deg,transparent 140deg,transparent 200deg,var(--amber) 250deg,transparent 300deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:orbit 14s linear infinite;filter:drop-shadow(0 0 8px rgba(111,227,255,.6))}
+.headshot img{width:100%;display:block;border-radius:50%;border:3px solid rgba(111,227,255,.5);
+  box-shadow:0 0 90px rgba(111,227,255,.35),0 0 34px rgba(111,227,255,.25),inset 0 0 40px rgba(111,227,255,.15);
+  animation:heropulse 5s ease-in-out infinite}
+.headshot::before{content:"";position:absolute;inset:-26px;border-radius:50%;
+  border:1px dashed rgba(111,227,255,.4);animation:orbitrev 40s linear infinite}
+.headshot::after{content:"";position:absolute;top:-30px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 16px var(--amber),0 0 30px rgba(255,180,84,.6);
+  transform-origin:5.5px calc(50% + 30px + 175px);animation:orbit 18s linear infinite}
+.headshot figcaption{position:absolute;left:50%;bottom:-3rem;transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;color:var(--cyan);text-transform:uppercase;padding:0;
+  text-shadow:0 0 12px rgba(111,227,255,.7)}
+.headshot figcaption::before{content:"[ "}.headshot figcaption::after{content:" ]"}
 @keyframes orbit{to{transform:rotate(360deg)}}
-@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:190px}
-  .headshot::after{transform-origin:4.5px calc(50% + 18px + 95px)}}
+@keyframes orbitrev{to{transform:rotate(-360deg)}}
+@keyframes heropulse{50%{box-shadow:0 0 120px rgba(111,227,255,.5),0 0 44px rgba(111,227,255,.35),inset 0 0 40px rgba(111,227,255,.2)}}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.headshot{width:230px;margin:20px auto 3rem}
+  .headshot::after{transform-origin:5.5px calc(50% + 30px + 115px)}}
 .badges{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.5rem 0}
 .badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--amber);border:1px solid rgba(255,180,84,.3);
   border-radius:99px;padding:.32rem .8rem}
@@ -190,7 +201,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
           <a class="cta ghost" href="#publications">Publications</a>
         </div>
       </div>
-      <div class="slot rv"><figure class="headshot"><img src="assets/photos/headshot.jpg" alt="Erik Goeke" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Crew · E.W. Goeke · GT AE</figcaption></figure></div>
+      <div class="slot rv"><figure class="headshot"><span class="ringwrap"></span><img src="assets/photos/headshot.jpg" alt="Erik Goeke" onerror="this.closest('.slot').classList.add('empty')"><figcaption>Crew · E.W. Goeke · GT AE</figcaption></figure></div>
     </div>
   </div>
   <div class="scrollhint">Scroll to begin the mission</div>
@@ -220,7 +231,7 @@ footer{position:relative;z-index:10;text-align:center;font-family:var(--mono);fo
 <section id="return">
   <div class="wrap">
     <div class="stagechip rv">Stage 02 · Downlink · NASA ML-Bots</div>
-    <h2 class="rv">Bringing It Back to Earth</h2>
+    <h2 class="rv">Leading NASA's ML-Bots Mission</h2>
     <p class="lede rv">As Research Team Lead of a 10-student, NASA-sponsored team, I build embedded machine learning systems on <b>NVIDIA Jetson Orin and Nano</b> robots and travel nationwide putting them in students' hands — sensor wiring, software bring-up, and on-device inference, taught hands-on.</p>
     <p class="plain rv">ML-Bots introduces younger students to machine learning through robotics: a four-module curriculum from first Python commands to training neural networks that drive a robot. I serve as primary contact with research and industry partners, and I've presented the program's impact to NASA in Washington, D.C. and to congressional staffers on Capitol Hill.</p>
     <div class="figrow rv">
