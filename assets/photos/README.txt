@@ -5,3 +5,4 @@ Drop your photos here (site auto-detects them; slots hide if a file is missing):
   classroom.jpg     - you presenting an ML-Bots session at the whiteboard
   capitol-hill.jpg  - group photo in front of the U.S. Capitol
   poster.jpg        - you presenting the AE 3610 structures poster
+nasa-msfc.jpg - you at NASA MSFC (Prithvi section)
